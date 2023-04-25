@@ -815,7 +815,7 @@ print(json.encode({"project_id": projectId, "tran_ref": reference, "amount": amo
 
 
   Future<dynamic> updateProfileImage({
-    int? id,
+
 
     File? user_image,
 
@@ -825,25 +825,26 @@ print(json.encode({"project_id": projectId, "tran_ref": reference, "amount": amo
       var dio = Dio();
       var formData = FormData.fromMap({
 
-        "user_id": id,
-        'picture': user_image != null ? await MultipartFile.fromFile(user_image.path.toString()) : null,
+
+        'photo': user_image != null ? await MultipartFile.fromFile(user_image.path.toString()) : null,
       });
 
-      response = await dio.post('${global.baseUrl}profile/update/dp',
+      response = await dio.post('${global.baseUrl}upload-photo',
           data: formData,
           options: Options(
             headers: await global.getApiHeaders(true),
           ));
       dynamic recordList;
-      if (response.statusCode == 200) {
-        recordList = CurrentUser.fromJson(response.data['data']);
-        //  recordList.token = response.data["token"];
+      if (response.statusCode == 200 && response.data['status'] =="success" ) {
+
+
+        recordList = response.data["path"];
       } else {
         recordList = null;
       }
       return getDioResult(response, recordList);
     } catch (e) {
-      print("Exception - submitreport(): " + e.toString());
+      print("Exception - submitImage(): " + e.toString());
     }
   }
 
